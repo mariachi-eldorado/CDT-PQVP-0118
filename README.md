@@ -10,5 +10,7 @@ Users:
 - CandaceXu / C4ndace
 - ChrisFierro / Chr1sF
 
-### Environment Setup
-_coming soon_
+### Developer Information
+
+Can be found [here](DEVELOPMENT.md)
+
