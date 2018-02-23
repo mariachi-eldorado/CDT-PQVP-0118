@@ -1,5 +1,6 @@
 VERSION_FILE=../VERSION
 XWIKIURL="http://download.forge.ow2.org/xwiki/xwiki-10.0.war"
+PGJARURL="https://jdbc.postgresql.org/download/postgresql-42.2.1.jar"
 
 ifeq ($(strip $(NO_REV)),)
 	DIRTY=$(shell git diff-index --quiet HEAD || echo "-dirty")
@@ -37,15 +38,21 @@ swagger:
 	@echo 'copy swagger'
 
 xwiki-10.0.war:
-	wget $(XWIKIURL)
+	wget "$(XWIKIURL)"
 
 xwiki-10.0: xwiki-10.0.war
 	 unzip -d xwiki-10.0 xwiki-10.0.war
 
-xwiki: xwiki-10.0
+xwiki: xwiki-10.0 
 	@echo 'copy xwiki'
 
-image: swagger xwiki
+override/WEB-INF/lib/postgresql-42.2.1.jar:
+	wget -P override/WEB-INF/lib "$(PGJARURL)"
+
+jdbc: override/WEB-INF/lib/postgresql-42.2.1.jar
+	@echo 'copy jdbc'
+
+image: swagger xwiki jdbc
 	@echo 'docker image build'
 	docker build -t $(IMAGE_VERSIONED_NAME) -t $(IMAGE_NAME):latest -f $(IMAGE_FILE) $(IMAGE_DIR)
 
